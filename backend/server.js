@@ -1,13 +1,17 @@
 const dotenv=require('dotenv');
 const express = require('express');
 const mongoose= require('mongoose');
-const productRoutes= require('./routes/productRoutes')
+const path=require('path');
+const productRoutes= require('./routes/productRoutes');
+const adminRoutes= require('./routes/adminRoutes');
+const emailRoutes= require('./routes/emailRoutes')
 dotenv.config()
 const cors = require('cors');
 
 const app= express();
 app.use(express.json());
 app.use(cors());
+app.use('/uploads',express.static(path.join(__dirname,'uploads')))
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>{console.log('DB connected successfully')})
 .catch((err) => {
@@ -15,6 +19,8 @@ mongoose.connect(process.env.MONGO_URI)
 })
 
 app.use('/api',productRoutes);
+app.use('/admin',adminRoutes);
+app.use('/email',emailRoutes)
 const PORT = process.env.PORT || 5000;
 app.listen(PORT,() =>{
     console.log(`Server started with port number ${PORT}`)
